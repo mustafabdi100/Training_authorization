@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Send Bond Agreement</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Send</button>
+  </form>
+  <a href="{% url 'hr_approved_requests' %}">Back to Approved Requests</a>
+{% endblock %}

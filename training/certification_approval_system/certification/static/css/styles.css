@@ -1,0 +1,14 @@
+.logo{
+    height: 50px;
+     margin-left: auto;
+     margin-right: auto;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     vertical-align: middle;
+   }
+
+
+   .black-link {
+    color: black;
+  }
