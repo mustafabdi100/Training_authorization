@@ -8,7 +8,47 @@
 
   <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <!-- ... Rest of the sidebar navigation ... -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'hr_dashboard' %}">
+      <div class="sidebar-brand-text mx-3">HR Dashboard</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'hr_dashboard' %}">
+        <span>Dashboard</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      Requests
+    </div>
+
+    <!-- Pending Requests -->
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'hr_pending_requests' %}">
+        <span>Pending</span>
+      </a>
+    </li>
+
+    <!-- Approved Requests -->
+    <li class="nav-item active">
+      <a class="nav-link" href="{% url 'hr_approved_requests' %}">
+        <span>Approved</span>
+      </a>
+    </li>
+
+    <!-- Declined Requests -->
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'hr_declined_requests' %}">
+        <span>Declined</span>
+      </a>
+    </li>
 
   </ul>
 
@@ -30,8 +70,6 @@
                       <th>Name</th>
                       <th>Department</th>
                       <th>Date</th>
-                      <th>Status</th> <!-- New column for status -->
-                      <th>Action</th> <!-- New column for action buttons -->
                     </tr>
                   </thead>
                   <tbody>
@@ -41,15 +79,8 @@
                       <td>{{ request.department }}</td>
                       <td>{{ request.request_date }}</td>
                       <td>
-                        {% if request.bond_agreement.is_signed %}
-                          <span class="text-success">Signed</span>
-                        {% else %}
-                          <span class="text-warning">Pending</span>
-                        {% endif %}
-                      </td>
-                      <td>
-                        <a href="{% url 'send_bond_agreement' request.id %}" class="btn btn-primary btn-sm">Send Bond Agreement</a>
-                      </td>
+                        <a href="{% url 'send_bond_agreement' request.id %}" class="btn btn-primary">Send Bond Agreement</a>
+                    </td>
                     </tr>
                     {% endfor %}
                   </tbody>

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Declined Payments</h6>
+    </div>
+    <div class="card-body">
+      {% if declined_agreements %}
+      {% for agreement in declined_agreements %}
+      <div class="row mb-4 justify-content-center">
+        <div class="col-lg-6">
+          <div class="bg-white p-4 shadow-sm">
+            <p class="mb-2"><strong>Name:</strong></p>
+            <p class="mb-4">{{ agreement.employee_request.name }}</p>
+            
+            <p class="mb-2"><strong>Department:</strong></p>
+            <p class="mb-4">{{ agreement.employee_request.department }}</p>
+            
+            <p class="mb-2"><strong>Contract Terms:</strong></p>
+            <p>{{ agreement.contract_terms }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <p class="text-center">There are currently no declined bond agreements.</p>
+      {% endif %}
+      
+      <div class="text-center mt-4">
+        <a href="{% url 'finance_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

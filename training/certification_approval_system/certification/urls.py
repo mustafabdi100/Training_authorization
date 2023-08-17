@@ -2,8 +2,10 @@
 
 from django.urls import path
 from . import views
+from .views import agreement_updated, declined_agreements, accepted_agreements
 
 urlpatterns = [
+     path('', views.custom_login, name='custom_login'),
     path('employee-dashboard/', views.employee_dashboard, name='employee_dashboard'),
     path('new-request/', views.new_request, name='new_request'),
     path('pending-requests/', views.pending_requests, name='pending_requests'),
@@ -17,12 +19,15 @@ urlpatterns = [
     path('hr-approved-requests/', views.hr_approved_requests, name='hr_approved_requests'),
     path('hr-declined-requests/', views.hr_declined_requests, name='hr_declined_requests'),
     path('send-bond-agreement/<int:request_id>/', views.send_bond_agreement, name='send_bond_agreement'),
-   path('view-bond-agreement/<int:bond_agreement_id>/', views.view_bond_agreement, name='view_bond_agreement'),
-
-   path('decline-bond-agreement/<int:bond_agreement_id>/', views.employee_decline_bond_agreement, name='employee_decline_agreement'),
-
-   
-    
-
-
+    path('view-bond-agreement/<int:request_id>/', views.view_bond_agreement, name='view_bond_agreement'),  
+     path('agreement-updated/', agreement_updated, name='agreement_updated'),
+     path('declined-agreements/', declined_agreements, name='declined_agreements'),
+     path('accepted-agreements/', accepted_agreements, name='accepted_agreements'),
+     path('finance-dashboard/', views.finance_dashboard, name='finance_dashboard'),
+     path('send-to-finance/<int:agreement_id>/', views.send_to_finance, name='send_to_finance'),
+     path('finance/pending/', views.finance_pending, name='finance_pending'),
+     path('finance/approved/', views.finance_approved, name='finance_approved'), 
+     path('finance/declined/', views.finance_declined, name='finance_declined'),
+     
+     
 ]

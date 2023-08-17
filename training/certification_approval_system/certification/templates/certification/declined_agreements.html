@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  
+
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Declined Agreements </h6>
+    </div>
+    <div class="card-body">
+      {% if declined_agreements %}
+      <ul class="list-unstyled">
+        {% for agreement in declined_agreements %}
+        <li class="mb-4">
+          <div class="bg-white p-4 shadow-sm">
+            <p class="mb-2"><strong>Employee:</strong> {{ agreement.employee_request.name }}</p>
+            <p class="mb-2"><strong>Date Declined:</strong> {{ agreement.employee_request.request_date }}</p>
+            <p class="mb-2"><strong>Contract Terms:</strong></p>
+            <p class="mb-0">{{ agreement.contract_terms }}</p>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-center">No declined agreements found.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="text-center">
+    <a href="{% url 'hr_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

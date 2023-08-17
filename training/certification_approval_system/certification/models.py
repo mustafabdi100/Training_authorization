@@ -1,5 +1,7 @@
 from django.db import models
 
+
+
 DEPARTMENT_CHOICES = [
     ('HR', 'HR'),
     ('Marketing', 'Marketing & Sales'),
@@ -38,15 +40,29 @@ class Feedback(models.Model):
         return f"Feedback from {self.sender} to {self.recipient_name}"
     
 
-
 class BondAgreement(models.Model):
-   employee_request = models.ForeignKey(EmployeeRequest, on_delete=models.CASCADE, default=1)
-   employee_name = models.CharField(max_length=50)
-   department = models.CharField(max_length=50)
-   contract_terms = models.TextField()
+  employee_request = models.OneToOneField(EmployeeRequest, on_delete=models.CASCADE)
+  contract_terms = models.TextField()
+  sign_status = models.CharField(max_length=20, choices=[
+    ('Pending', 'Pending'),
+    ('Signed', 'Signed'),
+    ('Declined', 'Declined')
+  ], default='Pending')
 
-   is_signed = models.BooleanField(default=False)
+  FINANCE_STATUS_CHOICES = [
+    ('Pending', 'Pending'),
+    ('Processed', 'Processed'),
+    ('Declined', 'Declined'), 
+  ]
 
-   def __str__(self):
-        return f"Bond Agreement for {self.employee_request.name}"
+  # other fields
+
+  finance_status = models.CharField(
+    max_length=20,
+    choices=FINANCE_STATUS_CHOICES, 
+    default='Pending'
+  )
+
+
+
 

@@ -1,0 +1,14 @@
+<!-- send_to_finance.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post">
+  {% csrf_token %}
+  <p>Are you sure you want to send this agreement to finance?</p>
+
+  <button type="submit">Send</button>
+</form>
+
+{% endblock %}

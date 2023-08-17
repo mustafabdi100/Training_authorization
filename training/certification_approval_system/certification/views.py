@@ -1,9 +1,47 @@
 # certification/views.py
-
+from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect,get_object_or_404
 from .models import EmployeeRequest, Feedback,BondAgreement
-from .forms import EmployeeRequestForm, HRFeedbackForm,BondAgreementForm
+from .forms import EmployeeRequestForm, HRFeedbackForm
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib import messages
 
+def is_employee(user):
+    return user.groups.filter(name='Employee').exists()
+
+employee_required = user_passes_test(is_employee, login_url='custom_login')
+
+def is_hr(user):
+    return user.groups.filter(name='HR').exists()
+
+hr_required = user_passes_test(is_hr, login_url='custom_login')
+
+def is_finance(user):
+    return user.groups.filter(name='Finance').exists()
+
+finance_required = user_passes_test(is_finance, login_url='custom_login')
+
+
+def custom_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            if user.groups.filter(name='Employee').exists():
+                return redirect('employee_dashboard')
+            elif user.groups.filter(name='HR').exists():
+                return redirect('hr_dashboard')
+            elif user.groups.filter(name='Finance').exists():
+                return redirect('finance_dashboard')  # Replace with actual finance dashboard URL
+        else:
+            # Invalid login
+            messages.error(request, 'Invalid login credentials.')
+            return render(request, 'certification/login.html')
+    return render(request, 'certification/login.html')
+
+@employee_required
 def employee_dashboard(request):
     employee_requests = EmployeeRequest.objects.filter(status='Approved')
     
@@ -17,19 +55,22 @@ def employee_dashboard(request):
     }
     return render(request, 'certification/employee_dashboard.html', context)
 
+@employee_required
 def approved_requests(request):
     approved_requests = EmployeeRequest.objects.filter(status='Approved')
     return render(request, 'certification/approved.html', {'approved_requests': approved_requests})
 
+@employee_required
 def pending_requests(request):
     requests = EmployeeRequest.objects.filter(status='Pending')
     return render(request, 'certification/pending.html', {'requests': requests})
 
-
+@employee_required
 def declined_requests(request):
     declined_requests = EmployeeRequest.objects.filter(status='Declined')
     return render(request, 'certification/declined.html', {'declined_requests': declined_requests})
 
+@employee_required
 def new_request(request):
     if request.method == 'POST':
         form = EmployeeRequestForm(request.POST)
@@ -41,6 +82,7 @@ def new_request(request):
 
     return render(request, 'certification/new_request.html', {'form': form})
 
+@hr_required
 def hr_dashboard(request):
 
   all_requests = EmployeeRequest.objects.all()  
@@ -57,6 +99,7 @@ def hr_dashboard(request):
 
   return render(request, 'certification/hr_dashboard.html', context)
 
+@hr_required
 def hr_all_requests(request):
   all_requests = EmployeeRequest.objects.all()
 
@@ -66,6 +109,7 @@ def hr_all_requests(request):
 
   return render(request, 'certification/hr_all_requests.html', context)
 
+@hr_required
 def hr_pending_requests(request):
     # Get all pending requests
     pending_requests = EmployeeRequest.objects.filter(status='Pending')
@@ -74,6 +118,7 @@ def hr_pending_requests(request):
     }
     return render(request, 'certification/hr_pending.html', context)
 
+@hr_required
 def hr_approve_request(request, request_id):
     # Get the certification request by id
     certification_request = get_object_or_404(EmployeeRequest, id=request_id)
@@ -91,7 +136,7 @@ def hr_approve_request(request, request_id):
     }
     return render(request, 'certification/hr_approve.html', context)
 
-
+@hr_required
 def hr_decline_request(request, request_id):
     # Get the certification request by id
     certification_request = get_object_or_404(EmployeeRequest, id=request_id)
@@ -109,13 +154,17 @@ def hr_decline_request(request, request_id):
     }
     return render(request, 'certification/hr_decline.html', context)
 
+@hr_required
 def hr_approved_requests(request):
-    approved_requests = EmployeeRequest.objects.filter(status='Approved').prefetch_related('bondagreement_set')
-    context = {
-        'approved_requests': approved_requests
-    }
-    return render(request, 'certification/hr_approved_requests.html', context)
+  approved_requests = EmployeeRequest.objects.filter(status='Approved')
 
+  context = {
+    'approved_requests': approved_requests
+  }
+
+  return render(request, 'certification/hr_approved_requests.html', context)
+
+@hr_required
 def hr_declined_requests(request):
   declined_requests = EmployeeRequest.objects.filter(status='Declined')
 
@@ -125,52 +174,159 @@ def hr_declined_requests(request):
 
   return render(request, 'certification/hr_declined_requests.html', context)
 
+@hr_required
 def send_bond_agreement(request, request_id):
-    employee_request = get_object_or_404(EmployeeRequest, id=request_id)
 
-    if request.method == 'POST':
-        form = BondAgreementForm(request.POST)
-        if form.is_valid():
-            bond_agreement = form.save(commit=False)
-            bond_agreement.employee_name = employee_request.name
-            bond_agreement.department = employee_request.department
-            bond_agreement.save()
+  employee_request = get_object_or_404(EmployeeRequest, id=request_id)
 
-            # Mark the original request as sent
-            employee_request.sent_bond_agreement = True
-            employee_request.save()
+  if request.method == 'POST':
 
-            return redirect('hr_approved_requests')  # Redirect back to the approved requests list
-    else:
-        form = BondAgreementForm()
+    # Create BondAgreement 
+    agreement = BondAgreement()
+    agreement.employee_request = employee_request
+    agreement.contract_terms = request.POST['contract_terms']
+    agreement.save()
+
+    return redirect('hr_approved_requests')
+
+  else:
 
     context = {
-        'form': form,
-        'employee_request': employee_request,
+      'employee_request': employee_request
     }
-    return render(request, 'certification/send_bond_agreement.html', context)
 
-def view_bond_agreement(request, bond_agreement_id):
-    bond_agreement = get_object_or_404(BondAgreement, id=bond_agreement_id)
+    return render(request, 'certification/send_agreement.html', context)
 
-    if request.method == 'POST':
-        # Logic for employee signing the agreement goes here
-        bond_agreement.is_signed = True
-        bond_agreement.save()
-        return redirect('employee_dashboard')
+@employee_required
+def view_bond_agreement(request, request_id):
 
+  employee_request = get_object_or_404(EmployeeRequest, id=request_id)
+  agreement = get_object_or_404(BondAgreement, employee_request=employee_request)
+
+  if request.method == 'POST':
+    
+    decision = request.POST['decision']
+    
+    if decision == 'accept':
+      agreement.sign_status = 'Signed'
+      
+    elif decision == 'decline':
+      agreement.sign_status = 'Declined'
+    
+    agreement.save()
+    
+    return redirect('agreement_updated')
+
+  context = {
+    'employee_request': employee_request,
+    'agreement': agreement
+  }
+
+  return render(request, 'certification/view_agreement.html', context)
+
+
+def agreement_updated(request):
+
+  context = {
+    'message': 'Agreement updated successfully!' 
+  }
+
+  return render(request, 'certification/agreement_updated.html', context)
+
+@hr_required
+def declined_agreements(request):
+    declined_agreements = BondAgreement.objects.filter(sign_status='Declined')
+    
     context = {
-        'bond_agreement': bond_agreement,
+        'declined_agreements': declined_agreements,
     }
-    return render(request, 'certification/view_bond_agreement.html', context)
+    
+    return render(request, 'certification/declined_agreements.html', context)
 
-def employee_decline_bond_agreement(request, bond_agreement_id):
-    bond_agreement = get_object_or_404(BondAgreement, id=bond_agreement_id)
+@hr_required
+def accepted_agreements(request):
+    accepted_agreements = BondAgreement.objects.filter(sign_status='Signed')
+    
+    context = {
+        'accepted_agreements': accepted_agreements,
+    }
+    
+    return render(request, 'certification/accepted_agreements.html', context)
 
-    # Add your decline logic here if needed
 
-    # For simplicity, let's mark the agreement as declined
-    bond_agreement.is_signed = False
-    bond_agreement.save()
+@hr_required
+def send_to_finance(request, agreement_id):
 
-    return redirect('employee_dashboard')
+  agreement = get_object_or_404(BondAgreement, id=agreement_id)
+
+  if request.method == 'POST':
+    agreement.finance_status = 'Pending'
+    agreement.save()
+
+    return redirect('agreement_updated')
+
+  return render(request, 'certification/send_to_finance.html')
+
+
+
+@finance_required
+def finance_dashboard(request):
+
+  context = {
+    'pending_count': BondAgreement.objects.filter(finance_status='Pending').count(),
+    'approved_count': BondAgreement.objects.filter(finance_status='Approved').count(),
+    'declined_count': BondAgreement.objects.filter(finance_status='Declined').count(),
+  }
+
+  return render(request, 'certification/finance_dashboard.html', context)
+
+
+@finance_required
+def finance_pending(request):
+
+  if request.method == 'POST':
+
+    agreements = BondAgreement.objects.select_related('employee_request')
+    
+    agreement_id = request.POST['agreement_id']
+    agreement = agreements.get(id=agreement_id)
+
+    if 'approve' in request.POST:
+      agreement.finance_status = 'Approved'
+
+    elif 'decline' in request.POST:
+      agreement.finance_status = 'Declined'
+
+    agreement.save()
+
+  agreements = BondAgreement.objects.filter(finance_status='Pending')
+
+  context = {
+    'pending_agreements': agreements
+  }
+
+  return render(request, 'certification/finance_pending.html', context)
+
+
+@finance_required
+def finance_approved(request):
+
+  agreements = BondAgreement.objects.select_related('employee_request').filter(finance_status='Approved')
+  
+  context = {
+    'approved_agreements': agreements
+  }
+
+  return render(request, 'certification/finance_approved.html', context)
+
+
+@finance_required
+def finance_declined(request):
+
+  agreements = BondAgreement.objects.select_related('employee_request').filter(finance_status='Declined')
+
+  context = {
+    'declined_agreements': agreements
+  }
+
+  return render(request, 'certification/finance_declined.html', context)
