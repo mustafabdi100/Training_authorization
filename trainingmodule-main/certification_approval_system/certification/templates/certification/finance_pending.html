@@ -19,7 +19,16 @@
           </div>
         </div>
         <div class="col-lg-6 text-right">
-          <!-- Forms to approve/decline -->
+          <form method="post" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="agreement_id" value="{{ agreement.id }}">
+            <button type="submit" name="approve" class="btn btn-success btn-sm">Approve</button>
+          </form>
+          <form method="post" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="agreement_id" value="{{ agreement.id }}">
+            <button type="submit" name="decline" class="btn btn-danger btn-sm">Decline</button>
+          </form>
         </div>
       </div>
       {% endfor %}

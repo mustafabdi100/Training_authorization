@@ -7,4 +7,10 @@
     align-items: center;
     vertical-align: middle;
   }
+
+  @media (max-width: 768px) { /* Adjust the breakpoint as needed */
+    .sidebar-hidden {
+      display: none;
+    }
+  }
   

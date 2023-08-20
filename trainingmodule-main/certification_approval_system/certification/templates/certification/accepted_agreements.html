@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div id="wrapper">
+  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion sidebar-hidden" id="accordionSidebar">
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center">
+          <div class="sidebar-brand-icon rotate-n-15">
+              <i class="fas fa-laugh-wink"></i>
+          </div>
+          <div class="sidebar-brand-text mx-3">HR PORTAL</div>
+      </a>
+
+      <!-- Sidebar - Approvals -->
+      <div class="sidebar-heading">
+          APPROVALS
+      </div>
+
+      <!-- Nav Item - Pending -->
+      <li class="nav-item">
+          <a class="nav-link" href="{% url 'hr_pending_requests' %}">
+              <i class="fas fa-clock"></i>
+              <span>Pending</span></a>
+      </li>
+
+      <!-- Nav Item - Approved -->
+      <li class="nav-item">
+          <a class="nav-link" href="{% url 'hr_approved_requests' %}">
+              <i class="fas fa-check-circle"></i>
+              <span>Approved</span></a>
+      </li>
+
+      <!-- Nav Item - Declined -->
+      <li class="nav-item">
+          <a class="nav-link" href="{% url 'hr_declined_requests' %}">
+              <i class="fas fa-times-circle"></i>
+              <span>Declined</span></a>
+      </li>
+
+      <!-- Nav Item - Feedback (HR) -->
+      <li class="nav-item">
+          <a class="nav-link" >
+              <i class="fas fa-comments"></i>
+              <span>Feedback</span></a>
+      </li>
+      <!-- ... Rest of the sidebar navigation ... -->
+
+  </ul>
+
+<div class="container-fluid">
+  
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Accepted Agreements </h6>
+    </div>
+    <div class="card-body">
+      {% if accepted_agreements %}
+      <ul class="list-unstyled">
+        {% for agreement in accepted_agreements %}
+        <li class="mb-4">
+          <div class="bg-white p-4 shadow-sm">
+            <p class="mb-2"><strong>Employee:</strong> {{ agreement.employee_request.name }}</p>
+            <p class="mb-2"><strong>Date Accepted:</strong> {{ agreement.employee_request.request_date }}</p>
+            <p class="mb-2"><strong>Contract Terms:</strong></p>
+            <p class="mb-0">{{ agreement.contract_terms }}</p>
+          </div>
+
+          <form method="post" action="{% url 'send_to_finance' agreement.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success mt-3">Send to Finance</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-center">No accepted agreements found.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

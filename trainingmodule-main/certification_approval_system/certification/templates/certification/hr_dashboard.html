@@ -40,21 +40,35 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url 'hr_pending_requests' %}">
                 <i class="fas fa-clock"></i>
-                <span>Pending</span></a>
+                <span>Pending requests</span></a>
         </li>
 
         <!-- Nav Item - Approved -->
         <li class="nav-item">
             <a class="nav-link" href="{% url 'hr_approved_requests' %}">
                 <i class="fas fa-check-circle"></i>
-                <span>Approved</span></a>
+                <span>Approved  requests</span></a>
         </li>
 
         <!-- Nav Item - Declined -->
         <li class="nav-item">
             <a class="nav-link" href="{% url 'hr_declined_requests' %}">
                 <i class="fas fa-times-circle"></i>
-                <span>Declined</span></a>
+                <span>Declined requests</span></a>
+        </li>
+
+        <!-- Nav Item - Declined -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'accepted_agreements' %}">
+                <i class="fas fa-check-circle"></i>
+                <span>Accepted agreements</span></a>
+        </li>
+
+        <!-- Nav Item - Declined -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'declined_agreements' %}">
+                <i class="fas fa-times-circle"></i>
+                <span>Declined agreements</span></a>
         </li>
 
         <!-- Nav Item - Feedback (HR) -->

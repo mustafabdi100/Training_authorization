@@ -50,20 +50,32 @@
                                     <h6 class="m-0 font-weight-bold text-primary">New Certification Request</h6>
                                 </div>
                                 <div class="card-body">
-                                    <form method="post">
+                                    <form method="post" class="user">
                                         {% csrf_token %}
-                                        {{ form.as_p }}
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <div class="form-group">
+                                            <label for="{{ form.name.id_for_label }}" class="font-weight-bold">Name</label>
+                                            <input type="text" class="form-control form-control-user" id="{{ form.name.id_for_label }}" name="{{ form.name.name }}" placeholder="Enter your name...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.department.id_for_label }}" class="font-weight-bold">Department</label>
+                                            {{ form.department }}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.reason_for_request.id_for_label }}" class="font-weight-bold">Reason for Request</label>
+                                            <textarea class="form-control form-control-user" id="{{ form.reason_for_request.id_for_label }}" name="{{ form.reason_for_request.name }}" rows="4" placeholder="Enter the reason for your request..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary btn-user btn-block">
+                                                Submit
+                                            </button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- End of Main Content -->
-        </div>
-    </div>
+                
 
     <!-- ... Scripts ... -->
 
