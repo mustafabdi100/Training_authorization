@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Vehicle Inventory</h1>
+
+{% for vehicle in vehicles %}
+
+  <div class="vehicle">
+
+    <h2>{{ vehicle.year }} {{ vehicle.manufacturer }} {{ vehicle.model }}</h2>
+    
+    <p>Price: ${{ vehicle.price }}</p>
+  
+    <p>Mileage: {{ vehicle.mileage }} miles</p>
+
+    {% for image in vehicle.image_set.all %}
+     <img src="{{ image.img.url }}" width="200">
+    {% endfor %}
+  
+  </div>
+
+{% endfor %}
+
+{% endblock %}

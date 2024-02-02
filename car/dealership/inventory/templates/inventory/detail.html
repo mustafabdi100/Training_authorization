@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>{{ vehicle.year }} {{ vehicle.manufacturer }} {{ vehicle.model }}</h1>
+
+<p>Price: ${{ vehicle.price }}</p>
+
+<p>Description: {{ vehicle.description }}</p>
+
+{% for image in vehicle.image_set.all %}
+  <img src="{{ image.img.url }}"> 
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="manufacturer-details">
+
+  <h1>{{ manufacturer.name }}</h1>
+  
+  <p>Country: {{ manufacturer.country }}</p>
+  
+  <p>Details about this auto manufacturer...</p>
+
+</div>
+
+<h2>{{ manufacturer.name }} Models</h2>
+
+{% for vehicle in vehicles %}
+
+  <div class="vehicle">
+    <a href="{{ vehicle.get_absolute_url }}">
+      {{ vehicle.year }} {{ vehicle.manufacturer }} {{ vehicle.model }}
+    </a>
+  </div>
+
+{% endfor %}
+
+<div class="paginator">
+  {% if vehicles.has_previous %}
+    <a href="?page={{ vehicles.previous_page_number }}">Previous</a>
+  {% endif %}
+
+  {% if vehicles.has_next %}
+    <a href="?page={{ vehicles.next_page_number }}">Next</a> 
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Automobile Manufacturers</h1>
+
+<div class="manufacturers-list">
+
+  {% for manufacturer in manufacturers %}
+
+    <div class="manufacturer">
+
+      <a href="{{ manufacturer.get_absolute_url }}">
+        <h3>{{ manufacturer.name }}</h3>
+      </a>
+      
+      <p>{{ manufacturer.country }}</p>
+      
+      <p>Models: {{ manufacturer.vehicle_set.count }}</p>
+      
+    </div>
+
+  {% endfor %}
+
+</div>
+
+<div class="paginator">
+
+  {% if manufacturers.has_other_pages %}
+
+    <a href="?page={{ manufacturers.previous_page_number }}">Prev</a> 
+
+    <a href="?page={{ manufacturers.next_page_number }}">Next</a>
+
+  {% endif %}
+
+</div>
+
+{% endblock %}
