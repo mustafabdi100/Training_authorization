@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Credit Card</title>
+</head>
+<body>
+    <h2>Add Credit Card</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Credit Card</button>
+    </form>
+</body>
+</html>

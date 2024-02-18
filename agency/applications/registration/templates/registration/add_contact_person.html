@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Contact Person</title>
+</head>
+<body>
+    <h2>Add Contact Person</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Contact Person</button>
+    </form>
+    <a href="{% url 'add_credit_card' business_id %}">Next: Add Credit Card</a>
+</body>
+</html>
