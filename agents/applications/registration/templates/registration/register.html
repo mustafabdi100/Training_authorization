@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load form_tags %} <!-- Make sure you have this custom tag ready for adding classes -->
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <div class="card bg-base-200 shadow-xl mx-auto max-w-md">
+        <div class="card-body">
+            <h2 class="card-title">Register</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">{{ field.label }}</span>
+                    </label>
+                    {{ field|add_class:"input input-bordered w-full max-w-xs" }}
+                    {% if field.help_text %}
+                    <label class="label">
+                        <span class="label-text-alt">{{ field.help_text }}</span>
+                    </label>
+                    {% endif %}
+                    {{ field.errors }}
+                </div>
+                {% endfor %}
+                <div class="form-control mt-6">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+            <div class="text-center">
+                <p class="mt-4">Already have an account? <a href="{% url 'login' %}" class="link link-accent">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

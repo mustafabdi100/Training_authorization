@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10">
+  <h2 class="text-2xl font-semibold mb-5">Contact Persons</h2>
+  <form method="post" class="space-y-4" id="contactForm">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% for form in formset %}
+      <div class="form-control w-full formset-form" style="display: none;">
+        {% for field in form %}
+          {% if not field.is_hidden %}
+            <label class="label">
+              <span class="label-text">{{ field.label }}</span>
+            </label>
+            {{ field|add_class:"input input-bordered w-full" }}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <div id="formsetControls">
+      <button type="button" class="btn" id="addContact">Add Another Contact</button>
+    </div>
+    <button type="submit" name="previous" class="btn">Previous</button>
+    <button type="submit" class="btn">Next</button>
+  </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const forms = document.querySelectorAll('.formset-form');
+    let currentFormIndex = 0; // Start with the first form
+    forms[currentFormIndex].style.display = 'block'; // Display the first form
+
+    document.getElementById('addContact').addEventListener('click', function() {
+        currentFormIndex++;
+        if (currentFormIndex < forms.length) {
+            forms[currentFormIndex].style.display = 'block';
+        }
+        if (currentFormIndex === forms.length - 1) {
+            this.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

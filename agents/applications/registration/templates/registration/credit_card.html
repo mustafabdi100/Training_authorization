@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10">
+  <h2 class="text-2xl font-semibold mb-5">Credit Cards</h2>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% for form in formset %}
+      <div class="form-control w-full" style="display: none;">
+        {% for field in form %}
+          <label class="label">
+            <span class="label-text">{{ field.label }}</span>
+          </label>
+          {{ field|add_class:"input input-bordered w-full" }}
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <div id="creditCardControls">
+      <button type="button" class="btn" id="addCreditCard">Add Another Credit Card</button>
+    </div>
+    <button type="submit" name="previous" class="btn">Previous</button>
+    <button type="submit" class="btn">Review</button>
+  </form>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const forms = document.querySelectorAll('.form-control');
+    let currentFormIndex = 0;
+    forms[currentFormIndex].style.display = 'block';
+
+    document.getElementById('addCreditCard').addEventListener('click', function() {
+        currentFormIndex++;
+        if (currentFormIndex < forms.length) {
+            forms[currentFormIndex].style.display = 'block';
+        }
+        if (currentFormIndex === forms.length - 1) {
+            this.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

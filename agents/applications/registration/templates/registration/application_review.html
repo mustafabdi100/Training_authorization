@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-semibold mb-4 text-center text-accent">Review Application</h2>
+
+    <div class="bg-base-300 rounded-lg shadow-md p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="font-semibold text-sm mb-1">Business Name:</p>
+                <p class="mb-4">{{ application.business_name }}</p>
+
+                <p class="font-semibold text-sm mb-1">Reference Number:</p>
+                <p class="mb-4">{{ application.reference_number }}</p>
+
+                <p class="font-semibold text-sm mb-1">Registration Number:</p>
+                <p class="mb-4">{{ application.registration_number }}</p>
+
+                <p class="font-semibold text-sm mb-1">KRA PIN:</p>
+                <p class="mb-4">{{ application.kra_pin }}</p>
+
+                <p class="font-semibold text-sm mb-1">Business Address:</p>
+                <p class="mb-4">{{ application.business_address }}</p>
+
+                <p class="font-semibold text-sm mb-1">City:</p>
+                <p class="mb-4">{{ application.city }}</p>
+
+                <p class="font-semibold text-sm mb-1">Country:</p>
+                <p class="mb-4">{{ application.country }}</p>
+            </div>
+
+            <div>
+                <p class="font-semibold text-sm mb-1">Phone Number:</p>
+                <p class="mb-4">{{ application.phone_number }}</p>
+
+                <p class="font-semibold text-sm mb-1">Email Address:</p>
+                <p class="mb-4">{{ application.email_address }}</p>
+
+                <p class="font-semibold text-sm mb-1">Registration Certificate:</p>
+                <p class="mb-4">{{ application.registration_certificate }}</p>
+
+                <p class="font-semibold text-sm mb-1">Trading License:</p>
+                <p class="mb-4">{{ application.trading_license }}</p>
+
+                <p class="font-semibold text-sm mb-1">Tax Compliance Certificate:</p>
+                <p class="mb-4">{{ application.tax_compliance_certificate }}</p>
+            </div>
+        </div>
+
+        <h3 class="text-lg font-semibold mt-6 mb-4">Contact Persons</h3>
+        <ul class="list-disc ml-6">
+            {% for contact in application.contact_persons.all %}
+            <li class="mb-2">{{ contact.first_name }} {{ contact.last_name }} - {{ contact.mobile_number }} - {{ contact.email_address }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3 class="text-lg font-semibold mt-6 mb-4">Credit Cards</h3>
+        <ul class="list-disc ml-6">
+            {% for card in application.credit_cards.all %}
+            <li class="mb-2">{{ card.card_type }} - XXXX XXXX XXXX {{ card.last_8_digits }}</li>
+            {% endfor %}
+        </ul>
+
+        {% if not is_rejected %}
+        <form method="post" class="mt-8">
+            {% csrf_token %}
+            <div class="flex justify-center gap-4">
+                {% if application.status != 'approved' %}
+                <button type="submit" name="approve" value="true" class="btn btn-primary">Approve</button>
+                {% endif %}
+                <button type="submit" name="reject" value="true" class="btn btn-error">Reject</button>
+            </div>
+        </form>
+        {% endif %}
+        
+        <div class="mt-4 flex justify-center">
+            <a href="{% url 'dashboard_view' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

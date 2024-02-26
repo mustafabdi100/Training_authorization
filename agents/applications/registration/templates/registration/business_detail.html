@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10">
+  <h2 class="text-2xl font-semibold mb-5">Business Details</h2>
+  <form method="post" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    <div class="form-control w-full">
+      {% for field in form %}
+        <label class="label">
+          <span class="label-text">{{ field.label }}</span>
+        </label>
+        {{ field|add_class:"input input-bordered w-full" }}
+        {% if field.help_text %}
+          <label class="label">
+            <span class="label-text-alt">{{ field.help_text }}</span>
+          </label>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn">Next</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-semibold mb-4 text-center text-accent">Approved Applications</h2>
+
+    <div class="overflow-x-auto mt-8">
+        <table class="table-auto w-full">
+            <thead>
+                <tr class="text-sm text-left">
+                    <th class="pb-4 font-bold text-accent">Business Name</th>
+                    <th class="pb-4 font-bold text-accent">Reference Number</th>
+                    <th class="pb-4 font-bold text-accent">Email</th>
+                    <th class="pb-4 font-bold text-accent">Phone Number</th>
+                    <th class="pb-4 font-bold text-accent">Status</th>
+                    <th class="pb-4 font-bold text-accent">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in approved_applications %}
+                <tr class="text-xs">
+                    <td class="py-5 px-6 font-medium">{{ application.business_name }}</td>
+                    <td class="py-5 px-6 font-medium">{{ application.reference_number }}</td>
+                    <td class="py-5 px-6 font-medium">{{ application.email_address }}</td>
+                    <td class="py-5 px-6 font-medium">{{ application.phone_number }}</td>
+                    <td>
+                        <span class="inline-block py-1 px-2 text-white bg-green-500 rounded-full" style="background-color: #10B981;">Approved</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'application_review_view' application.id %}" class="btn btn-xs btn-primary mr-2">View</a>
+                        <a href="{% url 'reject_application' application.id %}" class="btn btn-xs btn-error">Reject</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    <!-- Stats -->
+     <!-- Stats -->
+     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center mb-8">
+        
+        <div class="stat bg-base-300 rounded-lg shadow">
+            <div class="stat-value text-primary">{{ total_applications }}</div>
+            <div class="stat-title">Total Applications</div>
+        </div>
+        <!-- Approved Applications -->
+        <a href="{% url 'approved_applications_view' %}" class="stat bg-base-300 rounded-lg shadow block">
+            <div class="stat-value text-green-500">{{ approved_applications }}</div>
+            <div class="stat-title">Approved</div>
+        </a>
+
+        <!-- Pending Applications -->
+        <a href="{% url 'pending_applications_view' %}" class="stat bg-base-300 rounded-lg shadow block">
+            <div class="stat-value text-orange-500">{{ pending_applications }}</div>
+            <div class="stat-title">Pending</div>
+        </a>
+
+        <!-- Rejected Applications -->
+        <a href="{% url 'rejected_applications_view' %}" class="stat bg-base-300 rounded-lg shadow block">
+            <div class="stat-value text-red-500">{{ rejected_applications }}</div>
+            <div class="stat-title">Rejected</div>
+        </a>
+    </div>
+
+    <h2 class="text-2xl font-semibold mb-4 text-center text-accent">All Applications</h2>
+
+    <!-- Table -->
+    <div class="overflow-x-auto mt-8">
+        <table class="table-auto w-full">
+            <thead>
+                <tr class="text-sm text-left">
+                    <th class="pb-4 font-bold text-accent">Business Name</th>
+                    <th class="pb-4 font-bold text-accent">Reference Number</th>
+                    <th class="pb-4 font-bold text-accent">Email</th>
+                    <th class="pb-4 font-bold text-accent">Phone Number</th>
+                    <th class="pb-4 font-bold text-accent">Status</th>
+                    <th class="pb-4 font-bold text-accent">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in all_applications %}
+                <tr class="text-xs">
+                    <td class="py-5 px-6 font-medium">{{ application.business_name }}</td>
+                    <td class="py-5 px-6 font-medium">{{ application.reference_number }}</td>
+                    <td class="py-5 px-6 font-medium">{{ application.email_address }}</td>
+                    <td class="py-5 px-6 font-medium">{{ application.phone_number }}</td>
+                    <td>
+                        <span class="inline-block py-1 px-2 text-white bg-green-500 rounded-full" {% if application.status == "Approved" %}style="background-color: #10B981;"{% elif application.status == "Pending" %}style="background-color: #F59E0B;"{% elif application.status == "Rejected" %}style="background-color: #EF4444;"{% endif %}>{{ application.status }}</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'application_review_view' application.id %}" class="btn btn-xs btn-primary">Review</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
